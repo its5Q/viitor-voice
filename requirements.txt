@@ -1,0 +1,6 @@
+torch
+torchaudio
+transformers
+deepspeed
+vllm
+snac
