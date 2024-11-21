@@ -1,6 +1,4 @@
-torch
-torchaudio
 transformers
 deepspeed
-vllm
+vllm==0.6.3.post1
 snac
