@@ -5,7 +5,7 @@ from viitor_voice.utils.offline_inference import OfflineInference
 
 # 初始化 TTS 引擎
 tts_engine = OfflineInference(
-    model_path='ZzWater/highres-voice-en',
+    model_path='ZzWater/viitor-voice-en',
     config_path='viitor_voice/inference_configs/en.json'
 )
 
