@@ -28,7 +28,7 @@ with gr.Blocks() as demo:
     with gr.Row():
         text_input = gr.Textbox(label="text", lines=5, placeholder="input text")
         speaker_input = gr.Dropdown(label="speaker", choices=valid_speakers, value=valid_speakers[0])
-        speed_input = gr.Slider(label="speed", minimum=0, maximum=7, step=1, value=2)
+        speed_input = gr.Slider(label="speed", minimum=1, maximum=3, step=1, value=2)
 
     output_audio = gr.Audio(label="audio", type="numpy")
 
