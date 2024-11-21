@@ -2,3 +2,4 @@ transformers
 deepspeed
 vllm==0.6.3.post1
 snac
+torchaudio==2.4.0
