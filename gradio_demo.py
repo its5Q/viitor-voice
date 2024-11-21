@@ -10,17 +10,15 @@ tts_engine = OfflineInference(
 
 valid_speakers = list(tts_engine.prompt_map.keys())
 
-
 def generate_audio(text, speaker, speed):
     # check if speaker is valid
     if speaker not in valid_speakers:
         return f"Error: Invalid speaker. Please select one from {valid_speakers}."
 
-    # 使用 OfflineInference 生成音频
+    # Use OfflineInference to generate audio
     audios = tts_engine.batch_infer(text_list=[text], speaker=[speaker], speed=int(speed))
 
-    return audios[0]
-
+    return audios[0].numpy()
 
 with gr.Blocks() as demo:
     gr.Markdown("## Qwen2 based streaming tts")
@@ -40,6 +38,6 @@ with gr.Blocks() as demo:
         outputs=output_audio,
     )
 
-# 启动服务
+# Launch the service on localhost:5005
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(server_name="0.0.0.0", server_port=5005)
