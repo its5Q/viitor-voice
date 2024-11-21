@@ -77,5 +77,5 @@ class OfflineInference:
                 codes = [torch.from_numpy(np.array(x).astype(np.int32)[None,]).to('cuda') for x in
                          [first_elements, second_elements, third_elements]]
                 audio_hat_all = self.snac_model.decode(codes)
-                audios.append(audio_hat_all[0].cpu())
+                audios.append(audio_hat_all[0].cpu().to(torch.float32))
         return audios
