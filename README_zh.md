@@ -45,6 +45,10 @@ Decoder only结构天然支持Zero-shot克隆, 未来将支持基于极少量语
 conda create -n viitor_voice python=3.10
 conda activate viitor_voice
 pip install -r requirements.txt
+
+### Due to the issue with vllm's tokenizer length calculation, the token limit cannot take effect.
+python_package_path=`pip show pip | egrep Location | awk -F ' ' '{print $2}'`
+cp viitor_voice/utils/patch.py $python_package_path/vllm/entrypoints/openai/logits_processors.py
 ```
 
 ---
