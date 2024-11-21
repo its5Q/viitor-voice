@@ -10,6 +10,7 @@ tts_engine = OfflineInference(
 
 valid_speakers = list(tts_engine.prompt_map.keys())
 
+
 def generate_audio(text, speaker, speed):
     # check if speaker is valid
     if speaker not in valid_speakers:
@@ -18,10 +19,11 @@ def generate_audio(text, speaker, speed):
     # Use OfflineInference to generate audio
     audios = tts_engine.batch_infer(text_list=[text], speaker=[speaker], speed=int(speed))
 
-    return audios[0].numpy()
+    return 24000, audios[0].numpy()[0]
+
 
 with gr.Blocks() as demo:
-    gr.Markdown("## Qwen2 based streaming tts")
+    gr.Markdown("## VIITOR VOICE: LLM based streaming tts")
 
     with gr.Row():
         text_input = gr.Textbox(label="text", lines=5, placeholder="input text")
