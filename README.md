@@ -53,7 +53,7 @@ cp viitor_voice/utils/patch.py $python_package_path/vllm/entrypoints/openai/logi
 ---
 
 ## Inference
-### pretrained models
+### Pretrained Models
 - [English](https://huggingface.co/ZzWater/viitor-voice-en)
 ### Offline Inference
 
