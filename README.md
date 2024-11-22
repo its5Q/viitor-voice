@@ -71,11 +71,16 @@ audios = tts_engine.batch_infer(text_list=text_list, speaker=['1'], speed=2)
 torchaudio.save('test.wav', audios[0], 24000)
 ```
 
+### Demo Inference
+- [ViiTor AI](https://www.viitor.io/text-to-speech)
 ### Streaming Inference (TODO)
 
 ---
 ## Training (TODO)
+## Join Our Community
+[![Join Discord](https://img.shields.io/discord/your-discord-id?logo=discord&style=for-the-badge)](https://discord.gg/your-invite-link)
 
+Have questions about the project? Want to discuss new features, report bugs, or just chat with other contributors? Join our Discord community!
 ## References
 
 - [SNAC](https://github.com/hubertsiuzdak/snac)
