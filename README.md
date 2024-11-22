@@ -78,7 +78,7 @@ torchaudio.save('test.wav', audios[0], 24000)
 ---
 ## Training (TODO)
 ## Join Our Community
-[![Join Discord](https://img.shields.io/discord/your-discord-id?logo=discord&style=for-the-badge)](https://discord.gg/your-invite-link)
+[![Join Discord](https://img.shields.io/discord/your-discord-id?logo=discord&style=for-the-badge)](https://discord.gg/MbxgFn7BN8)
 
 Have questions about the project? Want to discuss new features, report bugs, or just chat with other contributors? Join our Discord community!
 ## References
