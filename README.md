@@ -117,6 +117,8 @@ Have questions about the project? Want to discuss new features, report bugs, or 
 - [SNAC](https://github.com/hubertsiuzdak/snac)
 - [mini-omni](https://github.com/gpt-omni/mini-omni)
 - [open-gpt-4-o](https://laion.ai/notes/open-gpt-4-o/)
+- [Qwen](https://huggingface.co/Qwen/Qwen2-0.5B)
+- [cosyvoice](https://huggingface.co/FunAudioLLM/CosyVoice-300M)
 
 ## License
 
