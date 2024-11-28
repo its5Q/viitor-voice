@@ -76,14 +76,29 @@ cp viitor_voice/utils/patch.py $python_package_path/vllm/entrypoints/openai/logi
 from viitor_voice.utils.offline_inference import OfflineInference
 import torchaudio
 
+## English
 tts_engine = OfflineInference(model_path='ZzWater/viitor-voice-en',
                               config_path='viitor_voice/inference_configs/en.json')
 text_list = [
     "Isn't it fascinating to think about the endless possibilities that lie within the pages of a book. every time you turn a page, you're diving into a new world ripe with potential for discovery, and wonder what stories will you uncover today."]
 # list valid speakers
+
 print(tts_engine.prompt_map.keys())
 audios = tts_engine.batch_infer(text_list=text_list, speaker=['1'], speed=2)
 torchaudio.save('test.wav', audios[0], 24000)
+
+## Chinese
+tte_engine_chs = OfflineInference(model_path='ZzWater/viitor-voice-chs',
+                                  config_path='viitor_voice/inference_configs/chs.json')
+text_list_chs = [
+    "我觉得我还是可以抢救一下的。"]
+audios = tte_engine_chs.batch_infer(text_list=text_list, speaker=['female1'], speed=1)
+torchaudio.save('test_chs.wav', audios[0], 24000)
+
+
+
+
+
 ```
 
 ### Demo Inference
