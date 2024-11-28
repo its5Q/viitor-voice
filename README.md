@@ -45,6 +45,10 @@ https://github.com/user-attachments/assets/d373f2fd-4b35-4b42-983f-3a5f0c25779d
 
 https://github.com/user-attachments/assets/94d6da03-bc71-4f7c-8453-9312a1eb6d1e
 
+### Chinese Male Voice 1:
+
+https://github.com/user-attachments/assets/8a03785b-8100-48fe-8d64-fd98406aab1d
+
 
 ---
 
