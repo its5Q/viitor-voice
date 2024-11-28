@@ -106,7 +106,8 @@ torchaudio.save('test_chs.wav', audios[0], 24000)
 ### Streaming Inference (TODO)
 
 ---
-## Training (TODO)
+## Training
+- [example](./train_example.md)
 ## Join Our Community
 [![Join Discord](https://img.shields.io/discord/your-discord-id?logo=discord&style=for-the-badge)](https://discord.gg/MbxgFn7BN8)
 
