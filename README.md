@@ -1,4 +1,4 @@
-# <center>Viitor-Voice</center>
+# <center>ViiTor-Voice</center>
 ### <center>An LLM based TTS Engine</center>
 
 <p align="center">
