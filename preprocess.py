@@ -8,6 +8,7 @@ import torchaudio.compliance.kaldi as kaldi
 from datasets import load_dataset
 from snac import SNAC
 from viitor_voice.utils.speaker_codebook_utils import encode as speaker_encode_with_codebook
+import json
 
 
 def compute_mse(original, reconstructed):
@@ -193,3 +194,23 @@ class DataPrepare:
 
         return res
 
+
+def main():
+    handler = DataPrepare(24000, 16000, 24000,
+                          'tool_models/campplus.onnx',
+                          'tool_models/snac_24khz', 'viitor_voice/utils/codebooks.npy')
+    ds = load_dataset('parquet', data_files='datasets/libritts_r/data/test.clean/*.parquet', split='train',
+                      streaming=True)
+    with open('datasets/libritts_r_tokenized.json', 'w', encoding='utf8') as f:
+
+        for i, x in enumerate(ds):
+            try:
+                audio = torch.tensor(x['audio']['array'].astype('float32')).to('cuda')[None]
+                data = handler(audio, x['text_normalized'])
+                f.write(json.dumps(data, ensure_ascii=False) + '\n')
+            except Exception as e:
+                print(e)
+
+
+if __name__ == '__main__':
+    main()
