@@ -92,7 +92,7 @@ tte_engine_chs = OfflineInference(model_path='ZzWater/viitor-voice-chs',
                                   config_path='viitor_voice/inference_configs/chs.json')
 text_list_chs = [
     "我觉得我还是可以抢救一下的。"]
-audios = tte_engine_chs.batch_infer(text_list=text_list, speaker=['female1'], speed=1)
+audios = tte_engine_chs.batch_infer(text_list=text_list_chs, speaker=['female1'], speed=2)
 torchaudio.save('test_chs.wav', audios[0], 24000)
 
 
