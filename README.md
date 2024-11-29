@@ -2,7 +2,7 @@
 ### <center>An LLM based TTS Engine</center>
 
 <p align="center">
-  <img src="asserts/post.webp" alt="Viitor-Voice Cover">
+  <img src="asserts/post_1.png" alt="Viitor-Voice Cover">
 </p>
 
 ## Features
