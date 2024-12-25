@@ -17,5 +17,5 @@ if __name__ == '__main__':
     tokenizer.add_tokens(added_special_tokens)
     tokenizer.save_pretrained(sys.argv[2])
     model = AutoModelForCausalLM.from_pretrained(sys.argv[1])
-    model.resize_position_embeddings(len(tokenizer))
+    model.resize_token_embeddings(len(tokenizer))
     model.save_pretrained(sys.argv[2])
