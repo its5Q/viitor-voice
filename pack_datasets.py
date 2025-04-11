@@ -21,18 +21,18 @@ class DataTrainingArguments:
     data_files: str = field(default=None, metadata={"help": "the regrex of files"})
     tokenizer_path: str = field(default=None, metadata={"help": "processed tokenizer path"})
     save_path: str = field(default='text', metadata={"help": ".."})
-    eos_token_id: int = field(default=156008)
+    eos_token_id: int = field(default=156026)
 
     preprocessing_num_workers: Optional[int] = field(
         default=24,
         metadata={"help": "The number of processes to use for the preprocessing."},
     )
     max_length: Optional[int] = field(
-        default=4096,
+        default=3072,
         metadata={
             "help": (
                 "A100: 4096"
-                "4090: 2048"
+                "4090: 3072"
             )
         },
     )
@@ -194,29 +194,29 @@ class MultipackDistributedBatchSampler(Sampler):
         return self.eff_total_used / self.eff_total_slots
 
 
-@dataclass
-class DataTrainingArguments:
-    """
-    Arguments pertaining to what data we are going to input our model for training and eval.
-    """
-    data_type: str = field(default='json', metadata={"help": "json, parquet, arrow"})
-    data_files: str = field(default=None, metadata={"help": "the regrex of files"})
-    save_path: str = field(default='text', metadata={"help": ".."})
-    eos_token_id: int = field(default=156008)
+# @dataclass
+# class DataTrainingArguments:
+#     """
+#     Arguments pertaining to what data we are going to input our model for training and eval.
+#     """
+#     data_type: str = field(default='json', metadata={"help": "json, parquet, arrow"})
+#     data_files: str = field(default=None, metadata={"help": "the regrex of files"})
+#     save_path: str = field(default='text', metadata={"help": ".."})
+#     eos_token_id: int = field(default=156008)
 
-    preprocessing_num_workers: Optional[int] = field(
-        default=24,
-        metadata={"help": "The number of processes to use for the preprocessing."},
-    )
-    max_length: Optional[int] = field(
-        default=4096,
-        metadata={
-            "help": (
-                "The maximum total input sequence length after tokenization. Sequences longer "
-                "than this will be truncated, sequences shorter will be padded."
-            )
-        },
-    )
+#     preprocessing_num_workers: Optional[int] = field(
+#         default=24,
+#         metadata={"help": "The number of processes to use for the preprocessing."},
+#     )
+#     max_length: Optional[int] = field(
+#         default=3072,
+#         metadata={
+#             "help": (
+#                 "The maximum total input sequence length after tokenization. Sequences longer "
+#                 "than this will be truncated, sequences shorter will be padded."
+#             )
+#         },
+#     )
 
 
 def build_dataset(data_args):
@@ -230,11 +230,13 @@ def build_dataset(data_args):
         output_text = ''.join(
             ['<|speech-{}|>'.format(i) if j % 7 != 0 else '<|SEP_AUDIO|><|speech-{}|>'.format(i) for j, i in
              enumerate(sample['target'])]) + '<|END_AUDIO|>'
-        input_ids = tokenizer(input_text, add_special_tokens=False).input_ids
-        output_ids = tokenizer(output_text, add_special_tokens=False).input_ids
-        input_ids = input_ids + output_ids
-        labels = input_ids + output_ids
-        labels[:120] = [-100] * len(labels[:120])
+        
+        prompt_ids = tokenizer(input_text, add_special_tokens=False).input_ids
+        target_ids = tokenizer(output_text, add_special_tokens=False).input_ids
+
+        input_ids = prompt_ids + target_ids
+
+        labels = input_ids
         return {"input_ids": input_ids, 'labels': labels}
 
     raw_dataset = raw_dataset.map(format_train, num_proc=24, remove_columns=list(raw_dataset.column_names))

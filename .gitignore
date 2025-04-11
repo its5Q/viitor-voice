@@ -1,0 +1,6 @@
+*.json
+*.parquet
+wandb/
+checkpoints/*
+tool_models/*
+__pycache__

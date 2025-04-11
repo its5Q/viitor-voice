@@ -1,20 +1,22 @@
 import gradio as gr
-import sys
+import sys, os
+
+os.environ['VLLM_WORKER_MULTIPROC_METHOD'] = 'spawn'
+
 from viitor_voice.inference.vllm_engine import VllmEngine
+from viitor_voice.inference.transformers_engine import TransformersEngine
 
 if __name__ == '__main__':
     # Initialize your OfflineInference class with the appropriate paths
-    offline_inference = VllmEngine("ZzWater/viitor-voice-mix")
+    offline_inference = TransformersEngine("./checkpoints/poc2/checkpoint-25200")
 
 
-    def clone_batch(text_list, prompt_audio, prompt_text):
-        print(prompt_audio.name)
+    def clone_batch(prompt_text):
         try:
             audios = offline_inference.batch_infer(
-                text_list=[text_list],
-                prompt_audio_path=prompt_audio.name,  # Use uploaded file's path
-                prompt_text=prompt_text,
+                text_list=[prompt_text]
             )
+            print(audios)
             return 24000, audios[0].cpu().numpy()[0].astype('float32')
         except Exception as e:
             return str(e)
@@ -22,21 +24,18 @@ if __name__ == '__main__':
 
     with gr.Blocks() as demo:
         gr.Markdown("# TTS Inference Interface")
-        with gr.Tab("Batch Clone"):
-            gr.Markdown("### Batch Clone TTS")
+        with gr.Tab("Batch TTS"):
+            gr.Markdown("### Batch TTS")
 
-            text_list_clone = gr.Textbox(label="Input Text List (Comma-Separated)",
-                                         placeholder="Enter text1, text2, text3...")
-            prompt_audio = gr.File(label="Upload Prompt Audio")
             prompt_text = gr.Textbox(label="Prompt Text", placeholder="Enter the prompt text")
 
-            clone_button = gr.Button("Run Batch Clone")
-            clone_output = gr.Audio(label="Generated Audios", type="numpy")
+            tts_button = gr.Button("Run TTS")
+            tts_output = gr.Audio(label="Generated Audios", type="numpy")
 
-            clone_button.click(
+            tts_button.click(
                 fn=clone_batch,
-                inputs=[text_list_clone, prompt_audio, prompt_text],
-                outputs=clone_output
+                inputs=[prompt_text],
+                outputs=tts_output
             )
 
     demo.launch(server_name="0.0.0.0")

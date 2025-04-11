@@ -19,7 +19,7 @@ from transformers import \
     Seq2SeqTrainingArguments, TrainerCallback, TrainingArguments, TrainerState, TrainerControl
 from transformers.trainer_utils import get_last_checkpoint, PREFIX_CHECKPOINT_DIR
 
-from viitor_voice.custom import Qwen2ForSnacLM, BartForSnacLM
+from viitor_voice.custom import Qwen2ForCausalLM
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +98,7 @@ class DataTrainingArguments:
         metadata={"help": "The number of processes to use for the preprocessing."},
     )
     max_length: Optional[int] = field(
-        default=1024,
+        default=3072,
         metadata={
             "help": (
                 "The maximum total input sequence length after tokenization. Sequences longer "
@@ -109,20 +109,14 @@ class DataTrainingArguments:
 
 
 def build_model(model_args: ModelArguments):
-    if model_args.model_type == 'seq2seq':
-        model = BartForSnacLM.from_pretrained(model_args.model_path)
-        encoder_tokenizer = AutoTokenizer.from_pretrained(model_args.model_path, trust_remote_code=True)
-        decoder_tokenizer = AutoTokenizer.from_pretrained(model_args.model_path, trust_remote_code=True)
-        return encoder_tokenizer, decoder_tokenizer, model
-
     if model_args.model_type == 'decoder':
         if model_args.num_hidden_layers is not None:
-            model = Qwen2ForSnacLM.from_pretrained(model_args.model_path,
+            model = Qwen2ForCausalLM.from_pretrained(model_args.model_path,
                                                    torch_dtype=torch.bfloat16,
-                                                   num_hidden_layers=model_args.num_hidden_layers)
+                                                   num_hidden_layers=model_args.num_hidden_layers, attn_implementation="flash_attention_2", device_map='auto')
         else:
-            model = Qwen2ForSnacLM.from_pretrained(model_args.model_path,
-                                                   torch_dtype=torch.bfloat16)
+            model = Qwen2ForCausalLM.from_pretrained(model_args.model_path,
+                                                   torch_dtype=torch.bfloat16, attn_implementation="flash_attention_2", device_map='auto')
         encoder_tokenizer = AutoTokenizer.from_pretrained(model_args.model_path, trust_remote_code=True)
         decoder_tokenizer = AutoTokenizer.from_pretrained(model_args.model_path, trust_remote_code=True)
         # for name, param in model.named_parameters():
@@ -200,18 +194,24 @@ def main():
     # Get the language codes for input/target.
     with training_args.main_process_first():
         train_dataset = build_dataset(data_args)
+        print('len: ', len(train_dataset[0]['input_ids']), len(train_dataset[0]['labels']))
         if not data_args.streaming:
             train_dataset = train_dataset.filter(
-                lambda x: max(len(x['input_ids']), len(x['labels'])) < data_args.max_length, num_proc=24).shuffle()
+                lambda x: max(len(x['input_ids']), len(x['labels'])) <= data_args.max_length, num_proc=24).shuffle()
         else:
             train_dataset = train_dataset.to_iterable_dataset(128)
             train_dataset = train_dataset.filter(
-                lambda x: max(len(x['input_ids']), len(x['labels'])) < data_args.max_length).shuffle(buffer_size=10000)
+                lambda x: max(len(x['input_ids']), len(x['labels'])) <= data_args.max_length).shuffle(buffer_size=10000)
 
     data_collator = DataCollatorForSeq2Seq(
         tokenizer=encoder_tokenizer,
         pad_to_multiple_of=8,
         return_tensors='pt')
+
+    # print("Train dataset len: ", len(train_dataset))
+
+
+
 
     # Initialize our Trainer
     trainer = Seq2SeqTrainer(
@@ -232,6 +232,7 @@ def main():
             checkpoint = training_args.resume_from_checkpoint
         elif last_checkpoint is not None:
             checkpoint = last_checkpoint
+        # print("do_train dataset len: ", len(train_dataset))
         train_result = trainer.train(resume_from_checkpoint=checkpoint)
         trainer.save_model()  # Saves the tokenizer too for easy upload
         if model_args.model_type in {'seq2seq', 'decoder'}:

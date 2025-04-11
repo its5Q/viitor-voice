@@ -15,6 +15,11 @@ if __name__ == '__main__':
     added_special_tokens = [AddedToken(x, special=True) for x in added_special_tokens]
     tokenizer.add_tokens(added_tokens)
     tokenizer.add_tokens(added_special_tokens)
+    
+    # padding to multiples of 64
+    if len(tokenizer) % 64 != 0:
+        tokenizer.add_tokens([f'<|padding-{i}|>' for i in range(64 - (len(tokenizer) % 64))])
+
     tokenizer.save_pretrained(sys.argv[2])
     model = AutoModelForCausalLM.from_pretrained(sys.argv[1])
     model.resize_token_embeddings(len(tokenizer))
