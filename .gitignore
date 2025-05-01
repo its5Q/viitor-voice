@@ -4,3 +4,4 @@ wandb/
 checkpoints/*
 tool_models/*
 __pycache__
+*.gz

@@ -20,6 +20,7 @@ from transformers import \
 from transformers.trainer_utils import get_last_checkpoint, PREFIX_CHECKPOINT_DIR
 
 from viitor_voice.custom import Qwen2ForCausalLM
+from transformers import Qwen3ForCausalLM
 
 logger = logging.getLogger(__name__)
 
@@ -111,12 +112,12 @@ class DataTrainingArguments:
 def build_model(model_args: ModelArguments):
     if model_args.model_type == 'decoder':
         if model_args.num_hidden_layers is not None:
-            model = Qwen2ForCausalLM.from_pretrained(model_args.model_path,
+            model = Qwen3ForCausalLM.from_pretrained(model_args.model_path,
                                                    torch_dtype=torch.bfloat16,
-                                                   num_hidden_layers=model_args.num_hidden_layers, attn_implementation="flash_attention_2", device_map='auto')
+                                                   num_hidden_layers=model_args.num_hidden_layers, attn_implementation="flash_attention_2", device_map='cuda')
         else:
-            model = Qwen2ForCausalLM.from_pretrained(model_args.model_path,
-                                                   torch_dtype=torch.bfloat16, attn_implementation="flash_attention_2", device_map='auto')
+            model = Qwen3ForCausalLM.from_pretrained(model_args.model_path,
+                                                   torch_dtype=torch.bfloat16, attn_implementation="flash_attention_2", device_map='cuda')
         encoder_tokenizer = AutoTokenizer.from_pretrained(model_args.model_path, trust_remote_code=True)
         decoder_tokenizer = AutoTokenizer.from_pretrained(model_args.model_path, trust_remote_code=True)
         # for name, param in model.named_parameters():
